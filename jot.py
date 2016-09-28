@@ -17,6 +17,9 @@ def jot_to_py(code):
     >>> double = lambda x: add(x)(x)
     >>> jot_to_py('11111000')(add)(double)(4)
     12
+    >>> # I combinator with S and K
+    >>> jot_to_py('11111110001110011100')('Identity!')
+    'Identity!'
     >>> # infinite loop
     >>> jot_to_py('11111111000111111111000001111111110000011111110001111111110\
 000011111111100000')
