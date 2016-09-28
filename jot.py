@@ -29,7 +29,7 @@ def jot_to_py(code):
     """
     def process_char(accum, char):
         if char == '1':
-            return lambda f: lambda a: accum(f(a))
+            return ski_S(ski_K(accum))
         elif char == '0':
             return accum(ski_S)(ski_K)
 
