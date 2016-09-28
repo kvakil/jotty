@@ -2,24 +2,48 @@
 from jot import jot_to_py
 
 def test_program(code, tests):
+    """Returns True if the given code satisfies all the tests."""
     p = jot_to_py(code)
     for test in tests:
-        if eval(test[0]) != test[1]:
+        if not eval(test):
             return False
     else:
         return True
 
-MAX_PROG = 2 ** 32
+def program_to_code(program, length=0):
+    """Converts a number to a string which can be executed by jot_to_py.
+    >>> program_to_code(6)
+    110
+    >>> program_to_code(5, 7)
+    0000101
+    """
+    return bin(program)[2:].zfill(length)
 
-tupler = lambda x: lambda y: (x, y)
-tests = [(compile('p(1)', '<string>', 'eval'), 1)]
-for program in range(MAX_PROG):
-    code = bin(program)[2:]
-    try:
-        if test_program(code, tests):
-            print(code)
-            break
-    except (KeyboardInterrupt, SystemExit):
-        raise
-    except:
-        pass
+def test_bitstrings(length, tests):
+    """Tests all bitstrings of a given length to see if any of them, when
+    interpreted as jot code, satisfy all the tests.
+
+    Prints out the code if it finds it.""" 
+    max_program = 2 ** length
+    for program in range(max_program):
+        code = program_to_code(program, length)
+        try:
+            if test_program(code, tests):
+                print('FOUND:', code)
+                return True
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            pass
+    return False
+
+# import and compile tests
+from target import *
+tests = [compile(test, 'target', 'eval') for test in tests]
+
+length = 0
+while True:
+    print(length)
+    if test_bitstrings(length, tests):
+        break
+    length += 1
