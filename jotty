@@ -24,34 +24,34 @@ def test_bitstrings(length, test):
             pass
     return None
 
-def parse_args():
-    import argparse
-
-    parser = argparse.ArgumentParser(prog='jotty',
-        epilog='see github for detailed docs & updates',
-        description='an automatic jot programmer')
-
-    parser.add_argument('targetfile', help='file containing tests to run')
-    parser.add_argument('-v', '--verbose', help='verbose mode',
-                        action='store_true')
-    parser.add_argument('-i', '--interactive', help='turn on interactive mode',
-                        action='store_true')
-
-    return parser.parse_args()
-
-
 if __name__ == '__main__':
+    def parse_args():
+        import argparse
+
+        parser = argparse.ArgumentParser(prog='jotty',
+            epilog='see github for detailed docs & updates',
+            description='an automatic jot programmer')
+
+        parser.add_argument('targetfile', help='file containing tests to run')
+        parser.add_argument('-v', '--verbose', help='verbose mode',
+                            action='store_true')
+        parser.add_argument('-i', '--interactive', help='turn on interactive mode',
+                            action='store_true')
+
+        return parser.parse_args()
+
     args = parse_args()
 
     try:
         with open(args.targetfile) as f:
             exec(f.read())
-            if not test:
-                print('No variable test found in', targetfile, file=sys.stderr)
-                sys.exit(2)
+            test = compile(test, args.targetfile, 'eval')
     except FileNotFoundError:
         print('File', args.targetfile, 'not found', file=sys.stderr)
         sys.exit(3)
+    except NameError:
+        print('No test variable defined in', args.targetfile, file=sys.stderr)
+        sys.exit(4)
     except:
         print('Error while executing', args.targetfile, file=sys.stderr)
         raise
@@ -61,11 +61,7 @@ if __name__ == '__main__':
         if args.verbose: print('Testing length', length)
 
         program = test_bitstrings(length, test)
-
         if program is not None:
-            if args.interactive:
-                p = jot_to_py(program)
-
             print(program)
             break
 
@@ -74,4 +70,5 @@ if __name__ == '__main__':
     if args.interactive:
         import code
         print()
+        p = jot_to_py(program)
         code.interact(banner='Use p for the jot program', local=locals())
