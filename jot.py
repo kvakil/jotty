@@ -36,6 +36,22 @@ def jot_to_py(code):
 
     return reduce(process_char, code, ski_I)
 
+def jot_to_ski(code):
+    """Tests:
+    >>> jot_to_ski(())
+    'I'
+    >>> jot_to_ski((0, 0))
+    '((((IS)K)S)K)'
+    >>> jot_to_ski((0, 0, 0))
+    '((((((IS)K)S)K)S)K)'
+    """
+    def process_char(accum, char):
+        if char:
+            return "S(K(" + accum + "))"
+        else:
+            return "((" + accum + "S)K)"
+
+    return reduce(process_char, code, 'I')
 
 if __name__ == "__main__":
     import doctest
