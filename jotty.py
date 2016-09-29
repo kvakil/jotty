@@ -1,35 +1,21 @@
 # Jotty Autoprogrammer
 from jot import jot_to_py
+from itertools import product
 
-def test_program(code, tests):
-    """Returns True if the given code satisfies all the tests."""
+def test_program(code, test):
+    """Returns True if the given code satisfies the test."""
     p = jot_to_py(code)
-    for test in tests:
-        if not eval(test):
-            return False
-    else:
-        return True
+    return eval(test)
 
-def program_to_code(program, length=0):
-    """Converts a number to a string which can be executed by jot_to_py.
-    >>> program_to_code(6)
-    110
-    >>> program_to_code(5, 7)
-    0000101
-    """
-    return bin(program)[2:].zfill(length)
-
-def test_bitstrings(length, tests):
+def test_bitstrings(length, test):
     """Tests all bitstrings of a given length to see if any of them, when
-    interpreted as jot code, satisfy all the tests.
+    interpreted as jot code, satisfy the test.
 
-    Prints out the code if it finds it.""" 
-    max_program = 2 ** length
-    for program in range(max_program):
-        code = program_to_code(program, length)
+    Prints out the code if it finds it."""
+    for program in product([0, 1], repeat=length):
         try:
-            if test_program(code, tests):
-                print('FOUND:', code)
+            if test_program(program, test):
+                print('FOUND:', program)
                 return True
         except (KeyboardInterrupt, SystemExit):
             raise
@@ -39,11 +25,11 @@ def test_bitstrings(length, tests):
 
 # import and compile tests
 from target import *
-tests = [compile(test, 'target', 'eval') for test in tests]
+test = compile(test, 'target', 'eval')
 
 length = 0
 while True:
     print(length)
-    if test_bitstrings(length, tests):
+    if test_bitstrings(length, test):
         break
     length += 1
