@@ -59,7 +59,7 @@ if __name__ == '__main__':
         print('Error while executing', args.targetfile, file=sys.stderr)
         raise
 
-    length = 1
+    length = 0
     while True:
         if args.v or args.verbose: print('Testing length', length)
 
